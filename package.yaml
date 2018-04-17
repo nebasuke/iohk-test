@@ -21,6 +21,7 @@ description:         Please see the README on Github at <https://github.com/neba
 
 dependencies:
 - base >= 4.7 && < 5
+- hostname-validate
 - parsec > 3 && < 4
 
 library:
@@ -37,13 +38,13 @@ executables:
     dependencies:
     - iohk-test
 
-#tests:
-#  iohk-test-test:
-#    main:                Spec.hs
-#    source-dirs:         test
-#    ghc-options:
-#    - -threaded
-#    - -rtsopts
-#    - -with-rtsopts=-N
-#    dependencies:
-#    - iohk-test
+tests:
+  iohk-test-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - iohk-test
