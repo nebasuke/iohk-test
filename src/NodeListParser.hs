@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module NodeListParser where
+module NodeListParser(
+  endPoints
+  ) where
 
 import Data.String (fromString)
 import Text.Hostname (validHostname)
@@ -26,16 +28,20 @@ colon = P.colon lexer
 decimal :: Parser Integer
 decimal = P.decimal lexer
 
-endPoints :: Parser [EndPoint]
-endPoints = undefined
+lexeme :: Parser a -> Parser a
+lexeme = P.lexeme lexer
 
-endPoint :: Parser (Either String EndPoint)
+endPoints :: Parser [EndPoint]
+endPoints = do
+  whiteSpace
+  many1 (lexeme endPoint)
+
+endPoint :: Parser EndPoint
 endPoint = do
   hostname <- anyChar `manyTill` colon
   port <- decimal
-  return $
-    if validHostname (fromString hostname)
-      then Right $ EndPoint hostname port
-    else Left $ "Invalid host name: " ++ (show hostname)
-
+  if validHostname (fromString hostname) || port > 65535
+    then return $ EndPoint hostname port
+    else fail $ "Invalid host name or port : " ++ show hostname
+             ++ " port: " ++ show port
 
