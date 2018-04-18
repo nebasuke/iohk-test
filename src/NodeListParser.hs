@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module NodeListParser(
-  endPoints
+  endPoint, endPoints,
+  parseEndPoints
   ) where
 
 import Data.String (fromString)
@@ -11,10 +12,7 @@ import Text.Parsec.Language (emptyDef)
 import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Token as P
 
-type Host = String
-type Port = Integer
-
-data EndPoint = EndPoint Host Port
+import Types
 
 lexer :: P.TokenParser ()
 lexer = P.makeTokenParser emptyDef
@@ -30,6 +28,9 @@ decimal = P.decimal lexer
 
 lexeme :: Parser a -> Parser a
 lexeme = P.lexeme lexer
+
+parseEndPoints :: String -> Either ParseError [EndPoint]
+parseEndPoints input = parse endPoints "" input
 
 endPoints :: Parser [EndPoint]
 endPoints = do
