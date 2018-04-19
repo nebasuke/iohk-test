@@ -12,7 +12,7 @@ cliInfo = info
   (helper <*> cliOptions)
   (  fullDesc
   <> progDesc "Launch Cloud Haskell with given nodes + exec times, and start messaging"
-  <> header "IOHK Cloud Haskell test task" )
+  <> header "IOHK Cloud Haskell test task - Bas van Gijzel (2018)" )
 
 cliOptions :: Parser Options
 cliOptions = Options
