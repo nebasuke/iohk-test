@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - hostname-validate
 - HUnit >= 1.6
+- optparse-applicative >= 0.14
 - parsec >= 3 && < 4
 
 library:
