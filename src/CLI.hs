@@ -1,28 +1,33 @@
-module CLI where
+module CLI (
+  cliInfo
+ ) where
 
 import Options.Applicative
 import Data.Semigroup ((<>))
 
-data Options = Options
-  { sendTime :: Int
-  , graceTime :: Int
-  , seed :: Int
-  , nodesFilePath :: String }
+import Types
+
+cliInfo :: ParserInfo Options
+cliInfo = info
+  (helper <*> cliOptions)
+  (  fullDesc
+  <> progDesc "Launch Cloud Haskell with given nodes + exec times, and start messaging"
+  <> header "IOHK Cloud Haskell test task" )
 
 cliOptions :: Parser Options
 cliOptions = Options
   <$> option auto
     (long "send-for"
     <> metavar "INT"
-    <> help "Sending time in seconds")
+    <> help "Sending period in seconds")
   <*> option auto
     (long "wait-for"
     <> metavar "INT"
     <> help "Grace period in seconds")
-  <*> option auto
+  <*> optional (option auto
     (long "with-seed"
-    <> metavar "SEED"
-    <> help "Initial seed for RNG in messages")
+    <> metavar "INT"
+    <> help "Initial seed for RNG in messages"))
   <*> strOption
     (long "node-list"
     <> metavar "PATH"

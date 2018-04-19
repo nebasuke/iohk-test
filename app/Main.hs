@@ -1,10 +1,12 @@
+{-# LANGUAGE RecordWildCards #-}
 module Main where
 
-
+import Options.Applicative
 import System.Exit
 import System.IO (stderr, hPutStr, hPutStrLn)
 import Text.Parsec
 
+import CLI (cliInfo)
 import NodeListParser (parseEndPoints)
 import Types
 
@@ -24,7 +26,8 @@ printErr x = putStrLnErr (show x)
 
 main :: IO ()
 main = do
-  input <- readFile "nodelist.txt"
+  Options{..} <- customExecParser (prefs showHelpOnError) cliInfo
+  input <- readFile nodesFilePath
   endPoints <-
     case (parseEndPoints input) of
       Left err -> putStrLnErr "Parsing error: " >> printErr err >> exitWith (ExitFailure 1)
