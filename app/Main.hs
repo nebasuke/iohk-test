@@ -8,8 +8,6 @@ import Text.Parsec
 import NodeListParser (parseEndPoints)
 import Types
 
-type FileName = String
-
 --------------------------------------------------------------------------
 -- Bunch of functions to directly support printing to standard error
 -- instead of standard output. 

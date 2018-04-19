@@ -22,7 +22,8 @@ description:         Please see the README on Github at <https://github.com/neba
 dependencies:
 - base >= 4.7 && < 5
 - hostname-validate
-- parsec > 3 && < 4
+- HUnit >= 1.6
+- parsec >= 3 && < 4
 
 library:
   source-dirs: src
