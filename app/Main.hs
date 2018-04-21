@@ -1,6 +1,9 @@
 {-# LANGUAGE RecordWildCards #-}
 module Main where
 
+import Control.Distributed.Process
+import Control.Distributed.Process.Node
+import Network.Transport.TCP
 import Options.Applicative
 import System.Exit
 import System.IO (stderr, hPutStr, hPutStrLn)
@@ -35,11 +38,6 @@ main = do
   case seed of
     Nothing -> return ()
     Just s -> setStdGen $ mkStdGen s
-
-  t <- getTimestamp
-  print t
-  t2 <- getTimestamp
-  print t2
   input <- readFile nodesFilePath
   endPoints <-
     case (parseEndPoints input) of
@@ -47,3 +45,11 @@ main = do
       Right endPoints -> return endPoints
   -- TODO
   print endPoints
+
+
+receiveProc :: ProcessId -> [Message] -> Process [Message]
+receiveProc senderPid ms = do
+  m <- expect
+  case m of
+    Left StopMessage -> return []
+    Right (NumMessage d ts) -> return []
