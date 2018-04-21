@@ -8,6 +8,7 @@ import System.Random
 import Text.Parsec
 
 import CLI (cliInfo)
+import Message
 import NodeListParser (parseEndPoints)
 import Types
 
@@ -34,7 +35,11 @@ main = do
   case seed of
     Nothing -> return ()
     Just s -> setStdGen $ mkStdGen s
-  
+
+  t <- getTimestamp
+  print t
+  t2 <- getTimestamp
+  print t2
   input <- readFile nodesFilePath
   endPoints <-
     case (parseEndPoints input) of

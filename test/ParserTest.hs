@@ -15,8 +15,3 @@ parseEndPoints1 = TestCase (
   )
 
 parserTests = TestList [TestLabel "Parse end points with starting and other whitespace" parseEndPoints1]
-
-
-runParseTests :: IO Counts
-runParseTests = runTestTT parserTests
-

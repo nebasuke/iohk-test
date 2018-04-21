@@ -2,9 +2,10 @@ module Main where
 
 import Test.HUnit
 
+import MessageTest
 import ParserTest
 
 main :: IO Counts
 main = do
-  runParseTests
+  runTestTT $ TestList [messageTests, parserTests]
 
