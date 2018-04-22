@@ -2,8 +2,9 @@
 module Main where
 
 import Control.Distributed.Process
+import Control.Distributed.Backend.P2P (makeNodeId)
 import Control.Distributed.Process.Node
-import Network.Transport.TCP
+import Network.Transport.TCP (createTransport, defaultTCPParameters)
 import Options.Applicative
 import System.Exit
 import System.IO (stderr, hPutStr, hPutStrLn)
@@ -17,7 +18,7 @@ import Types
 
 --------------------------------------------------------------------------
 -- Bunch of functions to directly support printing to standard error
--- instead of standard output. 
+-- instead of standard output.
 --------------------------------------------------------------------------
 putStrErr :: String -> IO ()
 putStrErr = hPutStr stderr
@@ -42,14 +43,21 @@ main = do
   endPoints <-
     case (parseEndPoints input) of
       Left err -> putStrLnErr "Parsing error: " >> printErr err >> exitWith (ExitFailure 1)
-      Right endPoints -> return endPoints
+      Right endPoints -> return $ map epToNodeId endPoints
   -- TODO
   print endPoints
 
+-- sendProc :: 
 
-receiveProc :: ProcessId -> [Message] -> Process [Message]
+receiveProc :: ProcessId -> [NumMessage] -> Process [NumMessage]
 receiveProc senderPid ms = do
   m <- expect
   case m of
-    Left StopMessage -> return []
-    Right (NumMessage d ts) -> return []
+    Left StopMessage -> return [] -- TODO
+    Right nm@(NumMessage _ _) -> receiveProc senderPid (nm : ms)
+
+printProc :: [NumMessage] -> Process ()
+printProc ms = liftIO . print $ (length ms, sumMessages ms)
+
+epToNodeId :: EndPoint -> NodeId
+epToNodeId (EndPoint host port) = makeNodeId $ host ++ ":" ++ (show port)

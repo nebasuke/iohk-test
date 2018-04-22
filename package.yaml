@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - binary >= 0.8
 - distributed-process >= 0.7
+- distributed-process-p2p >= 0.1.4
 - hostname-validate
 - HUnit >= 1.6
 - network-transport-tcp >= 0.6
