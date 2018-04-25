@@ -2,26 +2,28 @@ module Message (
  mkMessage, sumMessages
 ) where
 
-import Control.Monad (liftM2)
+import Control.Monad (liftM)
 import Data.List (sort)
 import Data.Time.Clock.POSIX (getPOSIXTime)
 import System.Random
 
 import Types
 
--- | Random number between (0, 1] using the global StdGen
--- (possibly pre-initialised with a cmd-line provided seed)
-genNum :: IO Double
-genNum = randomRIO (0 + epsilon, 1)
- where epsilon = 2.2204460492503131e-16
+-- | Random number between (0, 1] by using epsilon defined as minimum precision on Double. 
+genNum :: StdGen -> (Double, StdGen)
+genNum = randomR (0 + epsilon, 1)
+  where epsilon = 2.2204460492503131e-16
 
 -- | Timestamp in nanoseconds
 getTimestamp :: IO Int
 getTimestamp = (round.  (* 1000000)) `fmap` getPOSIXTime
 
 -- | Construct a message with a random number and timestamp.
-mkMessage :: IO NumMessage
-mkMessage = liftM2 NumMessage genNum getTimestamp
+mkMessage :: StdGen -> IO (NumMessage, StdGen)
+mkMessage gen = do
+  timestamp <- getTimestamp
+  let (num, newGen) = genNum gen
+  return $ (NumMessage num timestamp, newGen)
 
 -- | Sort a list of messages based on the timestamp,
 -- and construct the sum of i * d for each message,

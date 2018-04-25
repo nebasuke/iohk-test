@@ -4,6 +4,7 @@ module Main where
 import Control.Distributed.Process
 import Control.Distributed.Backend.P2P (makeNodeId)
 import Control.Distributed.Process.Node
+import Control.Monad (forever)
 import Network.Transport.TCP (createTransport, defaultTCPParameters)
 import Options.Applicative
 import System.Exit
@@ -32,22 +33,32 @@ printErr x = putStrLnErr (show x)
 
 main :: IO ()
 main = do
+  -- Read options from command line
   Options{..} <- customExecParser (prefs showHelpOnError) cliInfo
 
-  -- If we got supplied a seed, set the StdGen globally, once and for all.
-  -- Otherwise, we depend on the system initialised StdGen.
-  case seed of
-    Nothing -> return ()
-    Just s -> setStdGen $ mkStdGen s
   input <- readFile nodesFilePath
   endPoints <-
     case (parseEndPoints input) of
       Left err -> putStrLnErr "Parsing error: " >> printErr err >> exitWith (ExitFailure 1)
       Right endPoints -> return $ map epToNodeId endPoints
+
+  -- If we got supplied a seed, make a StdGen using the supplied seed
+  -- Otherwise, we depend on the system initialised StdGen.
+  gen <- case seed of
+    Nothing -> getStdGen
+    Just s ->  return $ mkStdGen s
+
   -- TODO
   print endPoints
 
--- sendProc :: 
+
+
+sendProc :: StdGen -> [NodeId] -> Process ()
+sendProc gen nodeIds = do
+  (message, newGen) <- liftIO $ mkMessage gen
+  return () -- TODO: send
+  sendProc newGen nodeIds
+
 
 receiveProc :: ProcessId -> [NumMessage] -> Process [NumMessage]
 receiveProc senderPid ms = do
