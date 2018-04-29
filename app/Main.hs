@@ -7,7 +7,6 @@ import Control.Distributed.Process
 import Control.Distributed.Backend.P2P (makeNodeId)
 import Control.Distributed.Process.Node
 import Control.Monad (forever, when)
-import Network.Transport (Transport)
 import Network.Transport.TCP (createTransport, defaultTCPParameters)
 import Options.Applicative
 import System.Exit (exitFailure)
