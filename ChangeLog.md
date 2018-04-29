@@ -1,3 +1,5 @@
 # Changelog for iohk-test
 
-## Unreleased changes
+## 1.0
+- Initial release
+

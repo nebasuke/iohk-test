@@ -1,5 +1,5 @@
 module CLI (
-  cliInfo
+  cliInfo, cliOptions
  ) where
 
 import Options.Applicative
@@ -7,6 +7,7 @@ import Data.Semigroup ((<>))
 
 import Types
 
+-- | A full description of the runnable command-line parser
 cliInfo :: ParserInfo Options
 cliInfo = info
   (helper <*> cliOptions)
@@ -14,6 +15,7 @@ cliInfo = info
   <> progDesc "Launch Cloud Haskell with given nodes + exec times, and start messaging"
   <> header "IOHK Cloud Haskell test task - Bas van Gijzel (2018)" )
 
+-- | Command line options defined as a parser
 cliOptions :: Parser Options
 cliOptions = Options
   <$> option auto
