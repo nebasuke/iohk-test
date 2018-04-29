@@ -9,7 +9,7 @@ import Control.Distributed.Process.Node
 import Control.Monad (forever, when)
 import Network.Transport.TCP (createTransport, defaultTCPParameters)
 import Options.Applicative
-import System.Exit (exitFailure)
+import System.Exit (exitFailure, exitSuccess)
 import System.IO (stderr, hPutStr, hPutStrLn)
 import System.Random
 import Text.Parsec
@@ -138,7 +138,7 @@ receiveProc sender ms = do
     match (\(_ :: StopMessage) -> do
       self <- getSelfPid
       say $ "Received a StopMessage from: " ++ show sender
-      kill sender "Sender should die now"
+      kill sender "Sender should stop sending messages now."
       return ms),
     match (\(nm :: NumMessage) -> do
       -- say $ "Received message: " ++ show nm
@@ -156,7 +156,10 @@ printProc ms = do
 stopProc :: Int -> [NodeId] -> Process ()
 stopProc graceTime nodeIds = do
   mapM_ (\ nId -> nsendRemote nId receiveProcLabel StopMessage) nodeIds
+  say $ "Starting graceTime: " ++ show graceTime
   liftIO . threadDelay $ graceTime * 1000000
+  say "Grace time over, exiting now."
+  liftIO exitSuccess
 
 -- | Hopefully unique label, that together with the NodeId should uniquely
 -- represent the process that wants to receive messages. 
